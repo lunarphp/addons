@@ -2,13 +2,13 @@
 
 namespace Lunar\Opayo;
 
-use Lunar\Facades\Payments;
-use Lunar\Opayo\Components\PaymentForm;
-use Lunar\Stripe\Managers\StripeManager;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use Lunar\Facades\Payments;
+use Lunar\Opayo\Components\PaymentForm;
+use Lunar\Stripe\Managers\StripeManager;
 
 class OpayoServiceProvider extends ServiceProvider
 {
@@ -28,9 +28,9 @@ class OpayoServiceProvider extends ServiceProvider
             return $app->make(Opayo::class);
         });
 
-        $this->mergeConfigFrom(__DIR__."/../config/opayo.php", "lunar.opayo");
+        $this->mergeConfigFrom(__DIR__.'/../config/opayo.php', 'lunar.opayo');
 
-        $this->loadRoutesFrom(__DIR__."/../routes/web.php");
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
         Blade::directive('opayoScripts', function () {
             $url = 'https://pi-test.sagepay.com/api/v1/js/sagepay.js';
@@ -56,7 +56,7 @@ class OpayoServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'lunar');
 
         $this->publishes([
-            __DIR__."/../config/opayo.php" => config_path("lunar/opayo.php"),
+            __DIR__.'/../config/opayo.php' => config_path('lunar/opayo.php'),
         ], 'lunar.opayo.config');
 
         $this->publishes([

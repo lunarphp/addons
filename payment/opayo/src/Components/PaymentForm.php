@@ -2,12 +2,12 @@
 
 namespace Lunar\Opayo\Components;
 
+use Livewire\Component;
 use Lunar\Facades\CartSession;
 use Lunar\Facades\Payments;
 use Lunar\Models\Cart;
 use Lunar\Opayo\Facades\Opayo;
 use Lunar\Stripe\Facades\StripeFacade;
-use Livewire\Component;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
 
@@ -72,14 +72,14 @@ class PaymentForm extends Component
     /**
      * Whether we are processing the payment.
      *
-     * @var boolean
+     * @var bool
      */
     public bool $processing = false;
 
     /**
      * Whether to show the ThreeDSecure challenge.
      *
-     * @var boolean
+     * @var bool
      */
     public bool $showChallenge = false;
 
@@ -97,7 +97,7 @@ class PaymentForm extends Component
      */
     protected $listeners = [
         'cardDetailsSubmitted',
-        'opayoThreedSecureResponse'
+        'opayoThreedSecureResponse',
     ];
 
     /**
@@ -131,7 +131,7 @@ class PaymentForm extends Component
 
     public function updatedShowChallenge($value)
     {
-        if (!$value) {
+        if (! $value) {
             $this->resetState();
         }
     }
@@ -159,6 +159,7 @@ class PaymentForm extends Component
                 $this->threeDSecure['paReq'] = $result->paReq;
                 $this->threeDSecure['transactionId'] = $result->transactionId;
                 $this->showChallenge = true;
+
                 return;
             }
         }
@@ -169,11 +170,13 @@ class PaymentForm extends Component
 
         if ($result->status == Opayo::AUTH_SUCCESSFUL) {
             $this->emit('opayoAuthorizationSuccessful');
+
             return;
         }
 
         if ($result->status == Opayo::AUTH_FAILED) {
             $this->emit('opayoAuthorizationFailed');
+
             return;
         }
     }
@@ -181,7 +184,7 @@ class PaymentForm extends Component
     /**
      * Process the ThreeDSecure response
      *
-     * @param array $params
+     * @param  array  $params
      * @return void
      */
     public function processThreed($params)
@@ -189,25 +192,28 @@ class PaymentForm extends Component
         $result = Payments::driver('opayo')->cart($this->cart)->withData([
             'cres' => $params['cres'] ?? null,
             'pares' => $params['pares'] ?? null,
-            'transaction_id' => $this->threeDSecure['transactionId']
+            'transaction_id' => $this->threeDSecure['transactionId'],
         ])->threedsecure();
 
-        if (!$result->success) {
+        if (! $result->success) {
             if ($result->status == Opayo::THREED_SECURE_FAILED) {
                 $this->error = 'You must complete the extra authentication';
                 $this->resetState();
+
                 return;
             }
 
             if ($result->status == Opayo::AUTH_FAILED) {
                 $this->error = 'Payment failed, please check details and try again';
                 $this->resetState();
+
                 return;
             }
         }
 
         if ($result->status == Opayo::AUTH_SUCCESSFUL) {
             $this->emit('opayoAuthorizationSuccessful');
+
             return;
         }
     }
@@ -246,6 +252,6 @@ class PaymentForm extends Component
      */
     public function render()
     {
-        return view("lunar::opayo.components.payment-form");
+        return view('lunar::opayo.components.payment-form');
     }
 }

@@ -2,13 +2,13 @@
 
 namespace Lunar\Opayo;
 
+use Illuminate\Support\Str;
 use Lunar\Base\DataTransferObjects\PaymentCapture;
 use Lunar\Base\DataTransferObjects\PaymentRefund;
 use Lunar\Models\Transaction;
 use Lunar\Opayo\Facades\Opayo;
 use Lunar\Opayo\Responses\PaymentAuthorize;
 use Lunar\PaymentTypes\AbstractPayment;
-use Illuminate\Support\Str;
 
 class OpayoPaymentType extends AbstractPayment
 {
@@ -34,8 +34,8 @@ class OpayoPaymentType extends AbstractPayment
      */
     public function authorize(): PaymentAuthorize
     {
-        if (!$this->order) {
-            if (!$this->order = $this->cart->order) {
+        if (! $this->order) {
+            if (! $this->order = $this->cart->order) {
                 $this->order = $this->cart->getManager()->createOrder();
             }
         }
@@ -59,7 +59,7 @@ class OpayoPaymentType extends AbstractPayment
 
         $response = Opayo::api()->post('transactions', $payload);
 
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             return new PaymentAuthorize(
                 success: false,
                 message: 'An unknown error occured'
@@ -103,8 +103,8 @@ class OpayoPaymentType extends AbstractPayment
     /**
      * Capture a payment for a transaction.
      *
-     * @param \Lunar\Models\Transaction $transaction
-     * @param integer $amount
+     * @param  \Lunar\Models\Transaction  $transaction
+     * @param  int  $amount
      * @return \Lunar\Base\DataTransferObjects\PaymentCapture
      */
     public function capture(Transaction $transaction, $amount = 0): PaymentCapture
@@ -116,7 +116,7 @@ class OpayoPaymentType extends AbstractPayment
 
         $data = $response->object();
 
-        if (!$response->successful() || isset($data->code)) {
+        if (! $response->successful() || isset($data->code)) {
             return new PaymentCapture(
                 success: false,
                 message: $data->description ?? 'An unknown error occured'
@@ -143,14 +143,14 @@ class OpayoPaymentType extends AbstractPayment
     /**
      * Refund a captured transaction
      *
-     * @param \Lunar\Models\Transaction $transaction
-     * @param integer $amount
-     * @param string|null $notes
+     * @param  \Lunar\Models\Transaction  $transaction
+     * @param  int  $amount
+     * @param  string|null  $notes
      * @return \Lunar\Base\DataTransferObjects\PaymentRefund
      */
     public function refund(Transaction $transaction, int $amount = 0, $notes = null): PaymentRefund
     {
-        $response = Opayo::api()->post("transactions", [
+        $response = Opayo::api()->post('transactions', [
             'transactionType' => 'Refund',
             'vendorTxCode' => Str::random(40),
             'referenceTransactionId' => $transaction->reference,
@@ -160,7 +160,7 @@ class OpayoPaymentType extends AbstractPayment
 
         $data = $response->object();
 
-        if (!$response->successful() || isset($data->code)) {
+        if (! $response->successful() || isset($data->code)) {
             return new PaymentRefund(
                 success: false,
                 message: $data->description ?? 'An unknown error occured'
@@ -193,8 +193,8 @@ class OpayoPaymentType extends AbstractPayment
      */
     public function threedsecure()
     {
-        if (!$this->order) {
-            if (!$this->order = $this->cart->order) {
+        if (! $this->order) {
+            if (! $this->order = $this->cart->order) {
                 $this->order = $this->cart->getManager()->createOrder();
             }
         }
@@ -213,7 +213,7 @@ class OpayoPaymentType extends AbstractPayment
 
         $response = Opayo::api()->post('transactions/'.$this->data['transaction_id'].'/'.$path, $payload);
 
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             return new PaymentAuthorize(
                 success: false
             );
@@ -228,7 +228,7 @@ class OpayoPaymentType extends AbstractPayment
             );
         }
 
-        if (!empty($data->status) && $data->status == 'NotAuthenticated') {
+        if (! empty($data->status) && $data->status == 'NotAuthenticated') {
             return new PaymentAuthorize(
                 success: false,
                 status: Opayo::THREED_SECURE_FAILED
@@ -259,8 +259,8 @@ class OpayoPaymentType extends AbstractPayment
     /**
      * Stores a transaction against the order.
      *
-     * @param stdclass $transaction
-     * @param boolean $success
+     * @param  stdclass  $transaction
+     * @param  bool  $success
      * @return void
      */
     protected function storeTransaction($transaction, $success = false)
@@ -291,7 +291,7 @@ class OpayoPaymentType extends AbstractPayment
     /**
      * Get the payload for authorizing a payment
      *
-     * @param string $type
+     * @param  string  $type
      * @return array
      */
     protected function getAuthPayload($type = 'Payment')

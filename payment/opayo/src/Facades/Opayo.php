@@ -2,8 +2,8 @@
 
 namespace Lunar\Opayo\Facades;
 
-use Lunar\Opayo\OpayoInterface;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Opayo\OpayoInterface;
 
 class Opayo extends Facade
 {

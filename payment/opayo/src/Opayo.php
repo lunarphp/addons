@@ -21,7 +21,7 @@ class Opayo implements OpayoInterface
             'https://pi-test.sagepay.com/api/v1/' :
             'https://pi-live.sagepay.com/api/v1/'
         )->withHeaders([
-            'Authorization' => 'Basic ' . $this->getCredentials(),
+            'Authorization' => 'Basic '.$this->getCredentials(),
             'Content-Type' => 'application/json',
             'Cache-Control' => 'no-cache',
         ]);
@@ -38,7 +38,7 @@ class Opayo implements OpayoInterface
             'vendorName' => $this->getVendor(),
         ]);
 
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             return;
         }
 
@@ -58,14 +58,14 @@ class Opayo implements OpayoInterface
     /**
      * Return a transaction from the API
      *
-     * @param string $id
+     * @param  string  $id
      * @return void
      */
     public function getTransaction($id, $attempt = 1)
     {
         $response = $this->http->get("transactions/{$id}");
 
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             if ($attempt > 4) {
                 return null;
             }
