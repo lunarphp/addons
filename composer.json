@@ -1,0 +1,54 @@
+{
+    "name": "lunarphp/addons",
+    "description": "Monorepo for Lunar addons",
+    "type": "library",
+    "require": {
+        "laravel/pint": "dev-main",
+        "livewire/livewire": "^2.0",
+        "lunarphp/core": "^0.1",
+        "php": "^8.0",
+        "stripe/stripe-php": "^7.114",
+        "symplify/monorepo-builder": "^11.1"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.4.4",
+        "orchestra/testbench": "^6.0|^7.0",
+        "phpunit/phpunit": "^9.5"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "LunarPHP",
+            "email": "hello@lunarphp.io"
+        },
+        {
+            "name": "Lunar",
+            "homepage": "https://lunarphp.io/"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Lunar\\Stripe\\": "payment/stripe/src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Lunar\\Stripe\\Tests\\": "payment/stripe/tests/"
+        }
+    },
+    "extra": {
+        "lunar": {
+            "name": "Stripe Payments"
+        },
+        "laravel": {
+            "providers": [
+                "Lunar\\Stripe\\StripePaymentsServiceProvider"
+            ]
+        }
+    },
+    "replace": {
+        "lunarphp/stripe": "self.version"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
