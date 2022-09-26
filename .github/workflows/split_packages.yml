@@ -46,7 +46,7 @@ jobs:
           user_email: "action@github.com"
           branch: "main"
           
-  tag_split_payments:
+  tag_split_search:
     runs-on: ubuntu-latest
     strategy:
       matrix:
