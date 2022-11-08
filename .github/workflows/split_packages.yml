@@ -21,7 +21,7 @@ jobs:
           php-version: 8.0
           coverage: none
       - name: Split ${{ matrix.package }}
-        uses: symplify/github-action-monorepo-split@main
+        uses: symplify/github-action-monorepo-split@02755d9ac89929afb8d5aacff142fda76075e507
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
@@ -60,7 +60,7 @@ jobs:
           php-version: 8.0
           coverage: none
       - name: Split ${{ matrix.package }}
-        uses: symplify/github-action-monorepo-split@main
+        uses: symplify/github-action-monorepo-split@02755d9ac89929afb8d5aacff142fda76075e507
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
