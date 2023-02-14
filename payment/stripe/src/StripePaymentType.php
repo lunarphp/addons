@@ -203,7 +203,6 @@ class StripePaymentType extends AbstractPayment
     private function releaseSuccess()
     {
         DB::transaction(function () {
-
             // Get our first successful charge.
             $charges = $this->paymentIntent->charges->data;
 
