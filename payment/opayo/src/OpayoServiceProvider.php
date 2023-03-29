@@ -3,12 +3,10 @@
 namespace Lunar\Opayo;
 
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Lunar\Facades\Payments;
 use Lunar\Opayo\Components\PaymentForm;
-use Lunar\Stripe\Managers\StripeManager;
 
 class OpayoServiceProvider extends ServiceProvider
 {

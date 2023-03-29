@@ -7,9 +7,6 @@ use Lunar\Facades\CartSession;
 use Lunar\Facades\Payments;
 use Lunar\Models\Cart;
 use Lunar\Opayo\Facades\Opayo;
-use Lunar\Stripe\Facades\StripeFacade;
-use Stripe\PaymentIntent;
-use Stripe\Stripe;
 
 class PaymentForm extends Component
 {
