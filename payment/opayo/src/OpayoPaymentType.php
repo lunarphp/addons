@@ -103,9 +103,7 @@ class OpayoPaymentType extends AbstractPayment
     /**
      * Capture a payment for a transaction.
      *
-     * @param  \Lunar\Models\Transaction  $transaction
      * @param  int  $amount
-     * @return \Lunar\Base\DataTransferObjects\PaymentCapture
      */
     public function capture(Transaction $transaction, $amount = 0): PaymentCapture
     {
@@ -143,10 +141,7 @@ class OpayoPaymentType extends AbstractPayment
     /**
      * Refund a captured transaction
      *
-     * @param  \Lunar\Models\Transaction  $transaction
-     * @param  int  $amount
      * @param  string|null  $notes
-     * @return \Lunar\Base\DataTransferObjects\PaymentRefund
      */
     public function refund(Transaction $transaction, int $amount = 0, $notes = null): PaymentRefund
     {
