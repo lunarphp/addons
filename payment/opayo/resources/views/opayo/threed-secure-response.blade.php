@@ -7,6 +7,9 @@
     <title>Document</title>
 </head>
 <body>
+    <div style="text-align: center;display: flex;align-content: center;justify-content: center;">
+        Processing...
+    </div>
     <script>
         (function () {
             if ( typeof window.CustomEvent === "function" ) return false;

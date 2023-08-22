@@ -30,14 +30,14 @@ class OpayoServiceProvider extends ServiceProvider
 
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
-        Blade::directive('opayoScripts', function () {
+        Blade::directive('opayoScripts', function ($incVendor = true) {
             $url = 'https://pi-test.sagepay.com/api/v1/js/sagepay.js';
 
             $manifest = json_decode(file_get_contents(__DIR__.'/../dist/mix-manifest.json'), true);
 
             $jsUrl = asset('/vendor/opayo'.$manifest['/opayo.js']);
 
-            if (config('services.opayo.env', 'test') == 'live') {
+            if (strtolower(config('services.opayo.env', 'test')) == 'live') {
                 $url = 'https://pi-live.sagepay.com/api/v1/js/sagepay.js';
             }
 
@@ -45,9 +45,14 @@ class OpayoServiceProvider extends ServiceProvider
 
             $jsUrl = asset('/vendor/lunar'.$manifest['/opayo.js']);
 
-            return  <<<EOT
-                <script src="{$jsUrl}"></script>
+            if (!$incVendor) {
+                return  <<<EOT
                 <script src="{$url}"></script>
+            EOT;
+            }
+            return  <<<EOT
+                <script src="{$jsUrl}" async></script>
+                <script src="{$url}" async></script>
             EOT;
         });
 

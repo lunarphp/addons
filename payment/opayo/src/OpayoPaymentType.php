@@ -8,6 +8,7 @@ use Lunar\Base\DataTransferObjects\PaymentRefund;
 use Lunar\Models\Transaction;
 use Lunar\Opayo\Facades\Opayo;
 use Lunar\Opayo\Responses\PaymentAuthorize;
+use Lunar\Opayo\Responses\ThreeDSecureResponse;
 use Lunar\PaymentTypes\AbstractPayment;
 
 class OpayoPaymentType extends AbstractPayment
@@ -32,7 +33,7 @@ class OpayoPaymentType extends AbstractPayment
      *
      * @return \Lunar\Base\DataTransferObjects\PaymentAuthorize
      */
-    public function authorize(): PaymentAuthorize
+    public function authorize(): PaymentAuthorize|ThreeDSecureResponse
     {
         if (! $this->order) {
             if (! $this->order = $this->cart->order) {
@@ -59,6 +60,7 @@ class OpayoPaymentType extends AbstractPayment
 
         $response = Opayo::api()->post('transactions', $payload);
 
+
         if (! $response->successful()) {
             return new PaymentAuthorize(
                 success: false,
@@ -69,7 +71,7 @@ class OpayoPaymentType extends AbstractPayment
         $response = $response->object();
 
         if ($response->status == '3DAuth') {
-            return new PaymentAuthorize(
+            return new ThreeDSecureResponse(
                 success: true,
                 status: Opayo::THREE_D_AUTH,
                 acsUrl: $response->acsUrl,
@@ -88,8 +90,11 @@ class OpayoPaymentType extends AbstractPayment
             success: $successful
         );
 
+        $status = $this->data['status'] ?? null;
+
         if ($successful) {
             $this->order->update([
+                'status' => $status ?? ($this->config['authorized'] ?? null),
                 'placed_at' => now(),
             ]);
         }
@@ -160,6 +165,7 @@ class OpayoPaymentType extends AbstractPayment
 
         $data = $response->object();
 
+
         if (! $response->successful() || isset($data->code)) {
             return new PaymentRefund(
                 success: false,
@@ -189,7 +195,6 @@ class OpayoPaymentType extends AbstractPayment
     /**
      * Handle the Three D Secure response.
      *
-     * @return void
      */
     public function threedsecure()
     {
@@ -222,6 +227,16 @@ class OpayoPaymentType extends AbstractPayment
         $data = $response->object();
 
         if (($data->statusCode ?? null) == '4026') {
+            $this->order->transactions()->create([
+                'success' => false,
+                'type' => 'capture',
+                'driver' => 'opayo',
+                'amount' => $data->amount?->totalAmount ?: 0,
+                'reference' => $data->transactionId,
+                'status' => $data->status,
+                'notes' => $data->statusDetail,
+                'card_type' => 'unknown',
+            ]);
             return new PaymentAuthorize(
                 success: false,
                 status: Opayo::THREED_SECURE_FAILED
@@ -244,8 +259,12 @@ class OpayoPaymentType extends AbstractPayment
             success: $successful
         );
 
+        $status = $this->data['status'] ?? null;
+
+
         if ($successful) {
             $this->order->update([
+                'status' => $status ?? ($this->config['authorized'] ?? null),
                 'placed_at' => now(),
             ]);
         }
@@ -322,9 +341,9 @@ class OpayoPaymentType extends AbstractPayment
                 'transType' => 'GoodsAndServicePurchase',
                 'browserLanguage' => $this->data['browserLanguage'] ?? null,
                 'challengeWindowSize' => $this->data['challengeWindowSize'] ?? null,
-                'browserIP' => $this->data['ip'] ?? null,
+                'browserIP' => $this->data['browserIP'] ?? null,
                 'notificationURL' => route('opayo.threed.response'),
-                'browserAcceptHeader' => $this->data['accept'] ?? null,
+                'browserAcceptHeader' => $this->data['browserAcceptHeader'] ?? null,
                 'browserJavascriptEnabled' => true,
                 'browserUserAgent' => $this->data['browserUserAgent'] ?? null,
                 'browserJavaEnabled' => (bool) ($this->data['browserJavaEnabled'] ?? null),

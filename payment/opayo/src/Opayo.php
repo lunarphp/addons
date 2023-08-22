@@ -16,7 +16,7 @@ class Opayo implements OpayoInterface
     public function __construct()
     {
         $this->http = Http::baseUrl(
-            config('services.opayo.env', 'test') == 'test' ?
+            strtolower(config('services.opayo.env', 'test')) == 'test' ?
              'https://pi-test.sagepay.com/api/v1/' :
              'https://pi-live.sagepay.com/api/v1/'
         )->withHeaders([
