@@ -5,7 +5,7 @@
     "require": {
         "laravel/pint": "dev-main",
         "livewire/livewire": "^2.0",
-        "lunarphp/lunar": "^0.5",
+        "lunarphp/lunar": "^0.6",
         "php": "^8.0",
         "stripe/stripe-php": "^7.114",
         "symplify/monorepo-builder": "^11.1"
@@ -29,31 +29,36 @@
     "autoload": {
         "psr-4": {
             "Lunar\\Opayo\\": "payment/opayo/src/",
+            "Lunar\\Paypal\\": "payment/paypal/src/",
             "Lunar\\Stripe\\": "payment/stripe/src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "Lunar\\Opayo\\Tests\\": "payment/opayo/tests/",
+            "Lunar\\Paypal\\Tests\\": "payment/paypal/tests/",
             "Lunar\\Stripe\\Tests\\": "payment/stripe/tests/"
         }
     },
     "extra": {
+        "laravel": {
+            "providers": [
+                "Lunar\\Opayo\\OpayoServiceProvider",
+                "Lunar\\Paypal\\PaypalServiceProvider",
+                "Lunar\\Stripe\\StripePaymentsServiceProvider"
+            ]
+        },
         "lunar": {
             "name": [
                 "Opayo Payments",
+                "Paypal Payments",
                 "Stripe Payments"
-            ]
-        },
-        "laravel": {
-            "providers": [
-                "Lunar\\Stripe\\StripePaymentsServiceProvider",
-                "Lunar\\Opayo\\OpayoServiceProvider"
             ]
         }
     },
     "replace": {
         "lunarphp/opayo": "self.version",
+        "lunarphp/paypal": "self.version",
         "lunarphp/stripe": "self.version"
     },
     "minimum-stability": "dev",
