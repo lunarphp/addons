@@ -55,7 +55,7 @@ class PaypalPaymentType extends AbstractPayment
 
         if (isset($paypalOrder['name']) && $paypalOrder['name'] == 'RESOURCE_NOT_FOUND') {
             return new PaymentAuthorize(
-                successful: false,
+                success: false,
             );
         }
 
