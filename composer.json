@@ -5,7 +5,7 @@
     "require": {
         "laravel/pint": "dev-main",
         "livewire/livewire": "^2.0",
-        "lunarphp/lunar": "^0.6",
+        "lunarphp/lunar": "^0.7",
         "php": "^8.0",
         "stripe/stripe-php": "^7.114",
         "symplify/monorepo-builder": "^11.1"
